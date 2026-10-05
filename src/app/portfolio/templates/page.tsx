@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { templates, TemplateEntry } from "@/lib/templates";
 import { usePortfolioStore } from "@/store/usePortfolioStore";
@@ -9,6 +9,9 @@ export default function TemplatesPage() {
   const router = useRouter();
   const { data, setTemplate } = usePortfolioStore();
   const [preview, setPreview] = useState<TemplateEntry | null>(null);
+    useEffect(() => {
+    usePortfolioStore.persist.rehydrate();
+  }, []);
 
   const choose = (id: string) => {
     setTemplate(id);

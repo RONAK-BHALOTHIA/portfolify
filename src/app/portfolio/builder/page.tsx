@@ -1,6 +1,12 @@
 "use client";
 
-import { useState, ReactNode } from "react";
+import { useState, useEffect, ReactNode } from "react";
+  const Template = current.component;
+    const [ready, setReady] = useState(false);
+
+  useEffect(() => {
+    Promise.resolve(usePortfolioStore.persist.rehydrate()).then(() => setReady(true));
+  }, []);
 import Link from "next/link";
 import { saveAs } from "file-saver";
 import { usePortfolioStore } from "@/store/usePortfolioStore";
@@ -12,6 +18,7 @@ const inputClass =
   "w-full rounded-md bg-slate-800 border border-slate-700 px-3 py-2 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-indigo-500";
 
 function Field({ label, children }: { label: string; children: ReactNode }) {
+    if (!ready) return <div className="h-screen bg-slate-950" />;
   return (
     <label className="block mb-3">
       <span className="block text-xs text-slate-400 mb-1">{label}</span>
