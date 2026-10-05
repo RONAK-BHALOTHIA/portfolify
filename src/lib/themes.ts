@@ -1,0 +1,138 @@
+export type Theme = {
+  id: string;
+  name: string;
+  description: string;
+  tags: string[];
+  align: "left" | "center";
+  font: string;
+  page: string;     // background + text color
+  muted: string;    // secondary text
+  accent: string;   // accent text color
+  button: string;   // primary button
+  chip: string;     // skill chips
+  card: string;     // project cards
+  line: string;     // borders
+};
+
+export const themes: Theme[] = [
+  {
+    id: "ocean",
+    name: "Ocean",
+    description: "Deep blue with cyan accents.",
+    tags: ["dark", "blue"],
+    align: "left",
+    font: "font-sans",
+    page: "bg-slate-900 text-slate-100",
+    muted: "text-slate-400",
+    accent: "text-cyan-400",
+    button: "bg-cyan-500 text-slate-900 hover:bg-cyan-400",
+    chip: "bg-slate-800 text-cyan-300",
+    card: "bg-slate-800/60 border border-slate-700",
+    line: "border-slate-700",
+  },
+  {
+    id: "sunset",
+    name: "Sunset",
+    description: "Warm, light and friendly.",
+    tags: ["light", "warm"],
+    align: "center",
+    font: "font-sans",
+    page: "bg-orange-50 text-stone-900",
+    muted: "text-stone-600",
+    accent: "text-orange-600",
+    button: "bg-orange-500 text-white hover:bg-orange-600",
+    chip: "bg-orange-100 text-orange-700",
+    card: "bg-white border border-orange-200",
+    line: "border-orange-200",
+  },
+  {
+    id: "forest",
+    name: "Forest",
+    description: "Dark green, calm and natural.",
+    tags: ["dark", "green"],
+    align: "left",
+    font: "font-sans",
+    page: "bg-emerald-950 text-emerald-50",
+    muted: "text-emerald-200/70",
+    accent: "text-emerald-400",
+    button: "bg-emerald-500 text-emerald-950 hover:bg-emerald-400",
+    chip: "bg-emerald-900 text-emerald-300",
+    card: "bg-emerald-900/50 border border-emerald-800",
+    line: "border-emerald-800",
+  },
+  {
+    id: "rose",
+    name: "Rose",
+    description: "Soft pink, centered layout.",
+    tags: ["light", "pink"],
+    align: "center",
+    font: "font-sans",
+    page: "bg-rose-50 text-slate-900",
+    muted: "text-slate-600",
+    accent: "text-rose-600",
+    button: "bg-rose-500 text-white hover:bg-rose-600",
+    chip: "bg-rose-100 text-rose-700",
+    card: "bg-white border border-rose-200",
+    line: "border-rose-200",
+  },
+  {
+    id: "mono",
+    name: "Mono",
+    description: "Black and white with a code feel.",
+    tags: ["dark", "developer"],
+    align: "left",
+    font: "font-mono",
+    page: "bg-black text-white",
+    muted: "text-zinc-400",
+    accent: "text-white",
+    button: "bg-white text-black hover:bg-zinc-200",
+    chip: "border border-zinc-700 text-zinc-300",
+    card: "border border-zinc-800",
+    line: "border-zinc-800",
+  },
+  {
+    id: "paper",
+    name: "Paper",
+    description: "Serif type on warm paper.",
+    tags: ["light", "editorial"],
+    align: "left",
+    font: "font-serif",
+    page: "bg-stone-100 text-stone-900",
+    muted: "text-stone-600",
+    accent: "text-stone-900",
+    button: "bg-stone-900 text-stone-100 hover:bg-stone-700",
+    chip: "bg-stone-200 text-stone-700",
+    card: "bg-stone-50 border border-stone-300",
+    line: "border-stone-300",
+  },
+  {
+    id: "neon",
+    name: "Neon",
+    description: "Bold dark theme with fuchsia glow.",
+    tags: ["dark", "bold"],
+    align: "center",
+    font: "font-sans",
+    page: "bg-zinc-950 text-zinc-100",
+    muted: "text-zinc-400",
+    accent: "text-fuchsia-400",
+    button: "bg-fuchsia-500 text-white hover:bg-fuchsia-400",
+    chip: "bg-fuchsia-950 text-fuchsia-300",
+    card: "bg-zinc-900 border border-fuchsia-900",
+    line: "border-fuchsia-900",
+  },
+  {
+    id: "royal",
+    name: "Royal",
+    description: "Deep indigo with gold accents.",
+    tags: ["dark", "premium"],
+    align: "left",
+    font: "font-sans",
+    page: "bg-indigo-950 text-indigo-50",
+    muted: "text-indigo-200/70",
+    accent: "text-amber-400",
+    button: "bg-amber-400 text-indigo-950 hover:bg-amber-300",
+    chip: "bg-indigo-900 text-amber-300",
+    card: "bg-indigo-900/50 border border-indigo-800",
+    line: "border-indigo-800",
+  },
+];
