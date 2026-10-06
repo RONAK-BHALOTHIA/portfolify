@@ -1,5 +1,5 @@
 "use client";
-
+import AnimatedBackground from "@/components/AnimatedBackground";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { templates, TemplateEntry } from "@/lib/templates";
@@ -19,7 +19,8 @@ export default function TemplatesPage() {
   };
 
   return (
-    <main className="min-h-screen bg-slate-950 text-white px-6 py-12">
+        <main className="relative isolate min-h-screen bg-slate-950 text-white px-6 py-12">
+      <AnimatedBackground />
       <div className="max-w-6xl mx-auto">
         <h1 className="text-4xl font-bold">Choose a template</h1>
         <p className="text-slate-400 mt-2 mb-10">
@@ -30,7 +31,7 @@ export default function TemplatesPage() {
           {templates.map((t) => {
             const Template = t.component;
             return (
-              <div key={t.id} className="w-[360px] rounded-xl border border-slate-800 bg-slate-900 overflow-hidden">
+              <div key={t.id} className="w-[360px] rounded-xl border border-slate-700/60 bg-slate-900/60 backdrop-blur-sm overflow-hidden">
                 {/* Thumbnail: 1200px wide page scaled to 360px (0.3) */}
                 <div className="relative h-[240px] overflow-hidden bg-white pointer-events-none">
                   <div className="origin-top-left w-[1200px] h-[800px] overflow-hidden" style={{ transform: "scale(0.3)" }}>
