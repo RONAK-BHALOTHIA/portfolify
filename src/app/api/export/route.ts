@@ -2,7 +2,6 @@ import JSZip from "jszip";
 import { promises as fs } from "fs";
 import path from "path";
 import { NextResponse } from "next/server";
-import { templates } from "@/lib/templates";
 import { themes } from "@/lib/themes";
 
 export const runtime = "nodejs";
@@ -13,12 +12,13 @@ const read = (rel: string) => fs.readFile(path.join(root, rel), "utf8");
 const slugify = (s: string) =>
   s.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "") || "portfolio";
 
+const SITE_FILES = ["SiteShell", "HomePage", "ProjectsPage", "ProjectDetail", "AboutPage", "ContactPage"];
+
 export async function POST(req: Request) {
   try {
     const { templateId, data } = await req.json();
 
-    const template = templates.find((t) => t.id === templateId);
-    if (!template) {
+    if (!themes.some((t) => t.id === templateId)) {
       return NextResponse.json({ error: "Unknown template." }, { status: 400 });
     }
     if (!data || typeof data !== "object" || typeof data.name !== "string") {
@@ -38,75 +38,124 @@ export async function POST(req: Request) {
     const zip = new JSZip();
     const add = (file: string, content: string) => zip.file(`${projectName}/${file}`, content);
 
-    // ---- Template files ----
-    if (templateId === "minimal") {
-      add("src/components/Template.tsx", await read("src/components/templates/MinimalTemplate.tsx"));
-    } else if (templateId === "dark-gradient") {
-      add("src/components/Template.tsx", await read("src/components/templates/DarkTemplate.tsx"));
-    } else {
-      const theme = themes.find((t) => t.id === templateId);
-      if (!theme) {
-        return NextResponse.json({ error: "Unknown theme." }, { status: 400 });
-      }
-      add("src/components/ThemedTemplate.tsx", await read("src/components/templates/ThemedTemplate.tsx"));
-      add("src/lib/themes.ts", await read("src/lib/themes.ts"));
-      add(
-        "src/components/Template.tsx",
-        [
-          'import { makeThemed } from "@/components/ThemedTemplate";',
-          'import { themes } from "@/lib/themes";',
-          "",
-          `export default makeThemed(themes.find((t) => t.id === ${JSON.stringify(templateId)})!);`,
-          "",
-        ].join("\n")
-      );
+    // ---- Site components (copied from this project) ----
+    for (const f of SITE_FILES) {
+      add(`src/site/${f}.tsx`, await read(`src/site/${f}.tsx`));
     }
-
-    // ---- Shared project files ----
+    add("src/lib/themes.ts", await read("src/lib/themes.ts"));
     add("src/types/portfolio.ts", await read("src/types/portfolio.ts"));
 
+    // ---- Content and chosen theme ----
     add(
       "src/data/portfolio.ts",
       `import { PortfolioData } from "@/types/portfolio";\n\nexport const data: PortfolioData = ${dataJson};\n`
     );
-
     add(
-      "src/app/page.tsx",
-      [
-        'import Template from "@/components/Template";',
-        'import { data } from "@/data/portfolio";',
-        "",
-        "export default function Page() {",
-        "  return <Template data={data} />;",
-        "}",
-        "",
-      ].join("\n")
+      "src/data/theme.ts",
+      `import { themes } from "@/lib/themes";\n\nexport const theme = themes.find((t) => t.id === ${JSON.stringify(
+        templateId
+      )})!;\n`
+    );
+
+    // ---- Pages ----
+    add(
+      "src/app/layout.tsx",
+      `import type { Metadata } from "next";
+import "./globals.css";
+import SiteShell from "@/site/SiteShell";
+import { data } from "@/data/portfolio";
+import { theme } from "@/data/theme";
+
+export const metadata: Metadata = {
+  title: data.name + " | Portfolio",
+  description: data.title,
+};
+
+export default function RootLayout({ children }: { children: React.ReactNode }) {
+  return (
+    <html lang="en">
+      <body>
+        <SiteShell data={data} theme={theme}>
+          {children}
+        </SiteShell>
+      </body>
+    </html>
+  );
+}
+`
     );
 
     add(
-      "src/app/layout.tsx",
-      [
-        'import type { Metadata } from "next";',
-        'import "./globals.css";',
-        "",
-        "export const metadata: Metadata = {",
-        `  title: ${JSON.stringify(`${data.name} | Portfolio`)},`,
-        `  description: ${JSON.stringify(String(data.title ?? ""))},`,
-        "};",
-        "",
-        "export default function RootLayout({ children }: { children: React.ReactNode }) {",
-        "  return (",
-        '    <html lang="en">',
-        "      <body>{children}</body>",
-        "    </html>",
-        "  );",
-        "}",
-        "",
-      ].join("\n")
+      "src/app/page.tsx",
+      `import HomePage from "@/site/HomePage";
+import { data } from "@/data/portfolio";
+import { theme } from "@/data/theme";
+
+export default function Page() {
+  return <HomePage data={data} theme={theme} />;
+}
+`
+    );
+
+    add(
+      "src/app/projects/page.tsx",
+      `import ProjectsPage from "@/site/ProjectsPage";
+import { data } from "@/data/portfolio";
+import { theme } from "@/data/theme";
+
+export default function Page() {
+  return <ProjectsPage data={data} theme={theme} />;
+}
+`
+    );
+
+    add(
+      "src/app/projects/[id]/page.tsx",
+      `import { notFound } from "next/navigation";
+import ProjectDetail from "@/site/ProjectDetail";
+import { data } from "@/data/portfolio";
+import { theme } from "@/data/theme";
+
+export function generateStaticParams() {
+  return data.projects.map((p) => ({ id: p.id }));
+}
+
+export default async function Page({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params;
+  const project = data.projects.find((p) => p.id === id);
+  if (!project) notFound();
+  return <ProjectDetail project={project} theme={theme} />;
+}
+`
+    );
+
+    add(
+      "src/app/about/page.tsx",
+      `import AboutPage from "@/site/AboutPage";
+import { data } from "@/data/portfolio";
+import { theme } from "@/data/theme";
+
+export default function Page() {
+  return <AboutPage data={data} theme={theme} />;
+}
+`
+    );
+
+    add(
+      "src/app/contact/page.tsx",
+      `import ContactPage from "@/site/ContactPage";
+import { data } from "@/data/portfolio";
+import { theme } from "@/data/theme";
+
+export default function Page() {
+  return <ContactPage data={data} theme={theme} />;
+}
+`
     );
 
     add("src/app/globals.css", '@import "tailwindcss";\n');
 
+    // ---- Project config ----
     add(
       "package.json",
       JSON.stringify(
@@ -155,6 +204,14 @@ export async function POST(req: Request) {
         "",
         "Generated with Portfolify.",
         "",
+        "## Pages",
+        "",
+        "- `/` Home",
+        "- `/projects` All projects",
+        "- `/projects/[id]` One page per project",
+        "- `/about` About",
+        "- `/contact` Contact",
+        "",
         "## Run locally",
         "",
         "```bash",
@@ -166,7 +223,7 @@ export async function POST(req: Request) {
         "",
         "## Edit your content",
         "",
-        "All your content is in `src/data/portfolio.ts`.",
+        "All your content is in `src/data/portfolio.ts`. The page layouts are in `src/site/`.",
         "",
       ].join("\n")
     );

@@ -1,7 +1,7 @@
 import type { NextConfig } from "next";
 
 const include = [
-  "./src/components/templates/**/*",
+  "./src/site/**/*",
   "./src/lib/themes.ts",
   "./src/types/portfolio.ts",
   "./tsconfig.json",

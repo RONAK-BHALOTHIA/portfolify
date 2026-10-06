@@ -10,7 +10,7 @@ export function makeThemed(theme: Theme) {
     return (
       <div className={`${theme.page} ${theme.font} min-h-full`}>
         <header className={`max-w-4xl mx-auto px-6 pt-24 pb-10 flex flex-col ${align}`}>
-          <h1 className="text-5xl font-bold tracking-tight">{data.name}</h1>
+          <h1 className={`text-5xl font-bold tracking-tight ${theme.nameClass ?? ""}`}>{data.name}</h1>
           <p className={`text-2xl mt-2 ${theme.accent}`}>{data.title}</p>
           {data.location && <p className={`text-sm mt-1 ${theme.muted}`}>{data.location}</p>}
           <p className={`mt-6 max-w-2xl leading-relaxed ${theme.muted}`}>{data.bio}</p>

@@ -41,10 +41,7 @@ export default function TemplatesPage() {
 >
                 {/* Thumbnail: 1200px wide page scaled to 360px (0.3) */}
                 <div className="relative h-[240px] overflow-hidden bg-white pointer-events-none">
-                  <div
-  className="origin-top-left w-[1200px] h-[800px] overflow-hidden transition-transform duration-500 group-hover:!scale-[0.32]"
-  style={{ transform: "scale(0.3)" }}
->
+                  <div className="origin-top-left w-[1200px] h-[800px] overflow-hidden" style={{ transform: "scale(0.3)" }}>
                     <Template data={data} />
                   </div>
                 </div>

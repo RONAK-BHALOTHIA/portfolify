@@ -12,6 +12,7 @@ export type Theme = {
   chip: string;     // skill chips
   card: string;     // project cards
   line: string;     // borders
+  nameClass?: string; // optional extra style for the big name (e.g. gradient)
 };
 
 export const themes: Theme[] = [
@@ -134,5 +135,36 @@ export const themes: Theme[] = [
     chip: "bg-indigo-900 text-amber-300",
     card: "bg-indigo-900/50 border border-indigo-800",
     line: "border-indigo-800",
+  },
+    {
+    id: "minimal",
+    name: "Minimal",
+    description: "Clean, light, text-first layout.",
+    tags: ["light", "simple"],
+    align: "left",
+    font: "font-sans",
+    page: "bg-white text-slate-900",
+    muted: "text-slate-600",
+    accent: "text-slate-900",
+    button: "bg-slate-900 text-white hover:bg-slate-700",
+    chip: "bg-slate-100 text-slate-700",
+    card: "bg-white border border-slate-200",
+    line: "border-slate-200",
+  },
+  {
+    id: "dark-gradient",
+    name: "Dark Gradient",
+    description: "Dark theme with a gradient headline.",
+    tags: ["dark", "modern"],
+    align: "left",
+    font: "font-sans",
+    page: "bg-slate-950 text-slate-100",
+    muted: "text-slate-400",
+    accent: "text-indigo-400",
+    button: "bg-indigo-600 text-white hover:bg-indigo-500",
+    chip: "bg-slate-800 text-indigo-300",
+    card: "bg-slate-900 border border-slate-800",
+    line: "border-slate-800",
+    nameClass: "bg-gradient-to-r from-indigo-400 to-pink-400 bg-clip-text text-transparent",
   },
 ];
