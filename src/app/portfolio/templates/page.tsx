@@ -31,10 +31,20 @@ export default function TemplatesPage() {
           {templates.map((t) => {
             const Template = t.component;
             return (
-              <div key={t.id} className="w-[360px] rounded-xl border border-slate-700/60 bg-slate-900/60 backdrop-blur-sm overflow-hidden">
+              <div
+  key={t.id}
+  className="group relative w-[360px] rounded-xl border border-slate-700/60 bg-slate-900/60 backdrop-blur-sm overflow-hidden
+             transition-all duration-300 ease-out
+             hover:-translate-y-3 hover:scale-[1.04] hover:z-10
+             hover:border-indigo-500
+             hover:shadow-[0_25px_60px_-10px_rgba(99,102,241,0.55)]"
+>
                 {/* Thumbnail: 1200px wide page scaled to 360px (0.3) */}
                 <div className="relative h-[240px] overflow-hidden bg-white pointer-events-none">
-                  <div className="origin-top-left w-[1200px] h-[800px] overflow-hidden" style={{ transform: "scale(0.3)" }}>
+                  <div
+  className="origin-top-left w-[1200px] h-[800px] overflow-hidden transition-transform duration-500 group-hover:!scale-[0.32]"
+  style={{ transform: "scale(0.3)" }}
+>
                     <Template data={data} />
                   </div>
                 </div>
