@@ -1,69 +1,134 @@
-import Image from "next/image";
+import Link from "next/link";
+
+const features = [
+  {
+    title: "10 templates",
+    text: "Light, dark, serif, and bold designs. Preview each one with your own details before you choose.",
+  },
+  {
+    title: "Live editing",
+    text: "Type your name, bio, skills, and projects and watch the portfolio update right next to the form.",
+  },
+  {
+    title: "AI writing help",
+    text: "Improve your bio and project descriptions with AI. You see the suggestion first and choose whether to keep it.",
+  },
+  {
+    title: "Real project export",
+    text: "Download a complete Next.js project as a ZIP. It runs on its own, without Portfolify.",
+  },
+  {
+    title: "Push to GitHub",
+    text: "Create a repository from the generated project in one click, if you want one.",
+  },
+  {
+    title: "Ready to deploy",
+    text: "Import the repository into Vercel and your portfolio gets a live link.",
+  },
+];
+
+const steps = [
+  { n: "1", title: "Pick a template", text: "Browse the gallery and open a live preview." },
+  { n: "2", title: "Add your details", text: "Fill in the form and see the page update as you type." },
+  { n: "3", title: "Improve with AI", text: "Tighten your bio and project descriptions." },
+  { n: "4", title: "Download or push", text: "Get the ZIP, or send it straight to GitHub." },
+  { n: "5", title: "Deploy", text: "Put it online with Vercel." },
+];
 
 export default function Home() {
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert h-5 w-[100px]"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the{" "}
-            <code className="rounded bg-black/[.06] px-1.5 py-0.5 font-mono text-[0.9em] dark:bg-white/[.08]">
-              page.tsx
-            </code>{" "}
-            file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
-        </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
+    <div className="min-h-screen bg-slate-950 text-white">
+      {/* Nav */}
+      <nav className="border-b border-slate-800">
+        <div className="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
+          <span className="text-lg font-bold">Portfolify</span>
+          <Link
+            href="/portfolio/templates"
+            className="px-4 py-2 rounded-lg bg-indigo-600 text-sm font-medium hover:bg-indigo-500"
           >
-            <Image
-              className="dark:invert h-[14px] w-4"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={14}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
+            Get started
+          </Link>
         </div>
-      </main>
+      </nav>
+
+      {/* Hero */}
+      <header className="max-w-6xl mx-auto px-6 pt-24 pb-20 text-center">
+        <p className="text-indigo-400 text-sm font-medium mb-4">Portfolio builder for developers</p>
+        <h1 className="text-5xl sm:text-6xl font-extrabold tracking-tight max-w-3xl mx-auto">
+          Build your portfolio.{" "}
+          <span className="bg-gradient-to-r from-indigo-400 to-pink-400 bg-clip-text text-transparent">
+            Own the code.
+          </span>
+        </h1>
+        <p className="text-slate-400 text-lg mt-6 max-w-2xl mx-auto">
+          Pick a template, add your details, and get a complete project you can download, push to GitHub, and deploy.
+        </p>
+        <div className="flex flex-wrap gap-3 justify-center mt-10">
+          <Link
+            href="/portfolio/templates"
+            className="px-6 py-3 rounded-lg bg-indigo-600 font-medium hover:bg-indigo-500"
+          >
+            Choose a template
+          </Link>
+          <Link
+            href="/portfolio/builder"
+            className="px-6 py-3 rounded-lg border border-slate-700 font-medium hover:border-slate-500"
+          >
+            Open the builder
+          </Link>
+        </div>
+      </header>
+
+      {/* Features */}
+      <section className="max-w-6xl mx-auto px-6 py-16">
+        <h2 className="text-3xl font-bold text-center">What you get</h2>
+        <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3 mt-10">
+          {features.map((f) => (
+            <div key={f.title} className="rounded-xl border border-slate-800 bg-slate-900 p-6">
+              <h3 className="font-semibold text-lg">{f.title}</h3>
+              <p className="text-slate-400 text-sm mt-2 leading-relaxed">{f.text}</p>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* How it works */}
+      <section className="border-y border-slate-800 bg-slate-900/50">
+        <div className="max-w-6xl mx-auto px-6 py-16">
+          <h2 className="text-3xl font-bold text-center">How it works</h2>
+          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-5 mt-10">
+            {steps.map((s) => (
+              <div key={s.n} className="text-center">
+                <div className="w-10 h-10 rounded-full bg-indigo-600 flex items-center justify-center font-bold mx-auto">
+                  {s.n}
+                </div>
+                <h3 className="font-semibold mt-4">{s.title}</h3>
+                <p className="text-slate-400 text-sm mt-1">{s.text}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Final CTA */}
+      <section className="max-w-6xl mx-auto px-6 py-20 text-center">
+        <h2 className="text-3xl font-bold">Ready to build yours?</h2>
+        <p className="text-slate-400 mt-3">It takes a few minutes to go from template to live site.</p>
+        <Link
+          href="/portfolio/templates"
+          className="inline-block mt-8 px-6 py-3 rounded-lg bg-indigo-600 font-medium hover:bg-indigo-500"
+        >
+          Get started
+        </Link>
+      </section>
+
+      {/* Footer */}
+      <footer className="border-t border-slate-800">
+        <div className="max-w-6xl mx-auto px-6 py-6 text-sm text-slate-500 flex justify-between">
+          <span>Portfolify</span>
+          <span>Built with Next.js and Claude</span>
+        </div>
+      </footer>
     </div>
   );
 }

@@ -1,12 +1,6 @@
 "use client";
 
 import { useState, useEffect, ReactNode } from "react";
-  const Template = current.component;
-    const [ready, setReady] = useState(false);
-
-  useEffect(() => {
-    Promise.resolve(usePortfolioStore.persist.rehydrate()).then(() => setReady(true));
-  }, []);
 import Link from "next/link";
 import { saveAs } from "file-saver";
 import { usePortfolioStore } from "@/store/usePortfolioStore";
@@ -18,8 +12,7 @@ const inputClass =
   "w-full rounded-md bg-slate-800 border border-slate-700 px-3 py-2 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-indigo-500";
 
 function Field({ label, children }: { label: string; children: ReactNode }) {
-    if (!ready) return <div className="h-screen bg-slate-950" />;
-  return (
+      return (
     <label className="block mb-3">
       <span className="block text-xs text-slate-400 mb-1">{label}</span>
       {children}
@@ -60,7 +53,11 @@ export default function BuilderPage() {
   const { data, templateId, setTemplate, updateField, reset } = usePortfolioStore();
   const current = getTemplate(templateId);
   const Template = current.component;
+   const [ready, setReady] = useState(false);
 
+  useEffect(() => {
+    Promise.resolve(usePortfolioStore.persist.rehydrate()).then(() => setReady(true));
+  }, []);
   const [exporting, setExporting] = useState(false);
   const [exportError, setExportError] = useState<string | null>(null);
 
@@ -106,7 +103,7 @@ export default function BuilderPage() {
 
   const updateSocial = (key: "github" | "linkedin" | "twitter", value: string) =>
     updateField("socials", { ...data.socials, [key]: value });
-
+    if (!ready) return <div className="h-screen bg-slate-950" />;
   return (
     <div className="h-screen flex bg-slate-950 text-white">
       {/* LEFT: form */}
