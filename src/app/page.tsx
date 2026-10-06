@@ -1,3 +1,4 @@
+import AnimatedBackground from "@/components/AnimatedBackground";
 import Link from "next/link";
 
 const features = [
@@ -37,7 +38,8 @@ const steps = [
 
 export default function Home() {
   return (
-    <div className="min-h-screen bg-slate-950 text-white">
+     <div className="relative isolate min-h-screen bg-slate-950 text-white">
+      <AnimatedBackground />
       {/* Nav */}
       <nav className="border-b border-slate-800">
         <div className="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
@@ -84,7 +86,7 @@ export default function Home() {
         <h2 className="text-3xl font-bold text-center">What you get</h2>
         <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3 mt-10">
           {features.map((f) => (
-            <div key={f.title} className="rounded-xl border border-slate-800 bg-slate-900 p-6">
+            <div key={f.title} className="rounded-xl border border-slate-700/60 bg-slate-900/50 p-6 backdrop-blur-sm">
               <h3 className="font-semibold text-lg">{f.title}</h3>
               <p className="text-slate-400 text-sm mt-2 leading-relaxed">{f.text}</p>
             </div>
