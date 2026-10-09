@@ -8,6 +8,8 @@ import { templates, getTemplate } from "@/lib/templates";
 import { Project } from "@/types/portfolio";
 import AIButton from "@/components/AIButton";
 import GitHubPush from "@/components/GitHubPush";
+import SitePreview from "@/components/SitePreview";
+import { themes } from "@/lib/themes";
 const inputClass =
   "w-full rounded-md bg-slate-800 border border-slate-700 px-3 py-2 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-indigo-500";
 
@@ -52,7 +54,7 @@ function ListInput({
 export default function BuilderPage() {
   const { data, templateId, setTemplate, updateField, reset } = usePortfolioStore();
   const current = getTemplate(templateId);
-  const Template = current.component;
+    const theme = themes.find((t) => t.id === current.id) ?? themes[0];
    const [ready, setReady] = useState(false);
 
   useEffect(() => {
@@ -239,7 +241,7 @@ export default function BuilderPage() {
 
       {/* RIGHT: live preview */}
       <main className="flex-1 overflow-auto">
-        <Template data={data} />
+                <SitePreview data={data} theme={theme} />
       </main>
     </div>
   );
