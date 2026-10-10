@@ -10,8 +10,26 @@ import ProjectDetail from "@/site/ProjectDetail";
 import AboutPage from "@/site/AboutPage";
 import ContactPage from "@/site/ContactPage";
 
+const KEY = "portfolify-preview-path";
+
 export default function SitePreview({ data, theme }: { data: PortfolioData; theme: Theme }) {
-  const [path, setPath] = useState("/");
+  // Start from the page saved before the refresh (falls back to Home)
+  const [path, setPathState] = useState<string>(() => {
+    try {
+      return sessionStorage.getItem(KEY) || "/";
+    } catch {
+      return "/";
+    }
+  });
+
+  const setPath = (p: string) => {
+    setPathState(p);
+    try {
+      sessionStorage.setItem(KEY, p);
+    } catch {
+      // storage unavailable, the preview still works
+    }
+  };
 
   // Catch clicks on the site's links and switch pages inside the preview
   const onClick = (e: MouseEvent<HTMLDivElement>) => {

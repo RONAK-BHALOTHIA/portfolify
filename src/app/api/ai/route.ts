@@ -1,10 +1,6 @@
-import Anthropic from "@anthropic-ai/sdk";
 import { NextResponse } from "next/server";
 
-const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
-
-// Change this if you want a different model.
-const MODEL = "claude-haiku-4-5-20251001";
+const MODEL = process.env.GEMINI_MODEL || "gemini-3.6-flash";
 
 const SYSTEM = `You edit text for developer portfolio websites.
 Rules:
@@ -21,8 +17,9 @@ const INSTRUCTIONS = {
 
 export async function POST(req: Request) {
   try {
-    if (!process.env.ANTHROPIC_API_KEY) {
-      return NextResponse.json({ error: "Missing ANTHROPIC_API_KEY in .env.local" }, { status: 500 });
+    const apiKey = process.env.GEMINI_API_KEY;
+    if (!apiKey) {
+      return NextResponse.json({ error: "Missing GEMINI_API_KEY in .env.local" }, { status: 500 });
     }
 
     const { kind, text, context } = await req.json();
@@ -44,23 +41,51 @@ Context about the person: ${String(context ?? "").slice(0, 500)}
 Text to improve:
 ${text}`;
 
-    const response = await client.messages.create({
-      model: MODEL,
-      max_tokens: 400,
-      system: SYSTEM,
-      messages: [{ role: "user", content: prompt }],
-    });
+    const res = await fetch(
+      `https://generativelanguage.googleapis.com/v1beta/models/${MODEL}:generateContent`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "x-goog-api-key": apiKey,
+        },
+        body: JSON.stringify({
+          systemInstruction: { parts: [{ text: SYSTEM }] },
+          contents: [{ role: "user", parts: [{ text: prompt }] }],
+          generationConfig: { maxOutputTokens: 1024, temperature: 0.7 },
+        }),
+      }
+    );
 
-    const block = response.content.find((b) => b.type === "text");
-    const improved = block && block.type === "text" ? block.text.trim() : "";
+    const json = await res.json().catch(() => ({}));
+
+    if (!res.ok) {
+      console.error("Gemini error:", res.status, json?.error?.message);
+      if (res.status === 400 || res.status === 403) {
+        return NextResponse.json(
+          { error: "Gemini rejected the request. Check your API key and the model name." },
+          { status: 502 }
+        );
+      }
+      if (res.status === 404) {
+        return NextResponse.json({ error: `Model "${MODEL}" was not found. Check the model name.` }, { status: 502 });
+      }
+      if (res.status === 429) {
+        return NextResponse.json({ error: "Gemini rate limit reached. Wait a minute and try again." }, { status: 429 });
+      }
+      return NextResponse.json({ error: "Gemini request failed. Check the terminal for details." }, { status: 502 });
+    }
+
+    const parts: { text?: string }[] = json?.candidates?.[0]?.content?.parts ?? [];
+    const improved = parts.map((p) => p.text ?? "").join("").trim();
 
     if (!improved) {
-      return NextResponse.json({ error: "No response from AI." }, { status: 502 });
+      return NextResponse.json({ error: "No response from AI. Try again." }, { status: 502 });
     }
 
     return NextResponse.json({ improved });
   } catch (err) {
-    console.error("AI route error:", err);
+    console.error("AI route error:", err instanceof Error ? err.message : "unknown");
     return NextResponse.json({ error: "AI request failed. Check the terminal for details." }, { status: 500 });
   }
 }

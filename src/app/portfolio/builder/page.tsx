@@ -10,11 +10,12 @@ import AIButton from "@/components/AIButton";
 import GitHubPush from "@/components/GitHubPush";
 import SitePreview from "@/components/SitePreview";
 import { themes } from "@/lib/themes";
+
 const inputClass =
   "w-full rounded-md bg-slate-800 border border-slate-700 px-3 py-2 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-indigo-500";
 
 function Field({ label, children }: { label: string; children: ReactNode }) {
-      return (
+  return (
     <label className="block mb-3">
       <span className="block text-xs text-slate-400 mb-1">{label}</span>
       {children}
@@ -33,6 +34,7 @@ function ListInput({
   placeholder?: string;
 }) {
   const [text, setText] = useState(value.join(", "));
+
   return (
     <input
       className={inputClass}
@@ -54,14 +56,16 @@ function ListInput({
 export default function BuilderPage() {
   const { data, templateId, setTemplate, updateField, reset } = usePortfolioStore();
   const current = getTemplate(templateId);
-    const theme = themes.find((t) => t.id === current.id) ?? themes[0];
-   const [ready, setReady] = useState(false);
+  const theme = themes.find((t) => t.id === current.id) ?? themes[0];
 
+  const [ready, setReady] = useState(false);
+  const [exporting, setExporting] = useState(false);
+  const [exportError, setExportError] = useState<string | null>(null);
+
+  // Load saved data from the browser before drawing the page
   useEffect(() => {
     Promise.resolve(usePortfolioStore.persist.rehydrate()).then(() => setReady(true));
   }, []);
-  const [exporting, setExporting] = useState(false);
-  const [exportError, setExportError] = useState<string | null>(null);
 
   const generate = async () => {
     setExporting(true);
@@ -103,9 +107,11 @@ export default function BuilderPage() {
       data.projects.filter((p) => p.id !== id)
     );
 
-  const updateSocial = (key: "github" | "linkedin" | "twitter", value: string) =>
+  const updateSocial = (key: "github" | "linkedin" | "instagram", value: string) =>
     updateField("socials", { ...data.socials, [key]: value });
-    if (!ready) return <div className="h-screen bg-slate-950" />;
+
+  if (!ready) return <div className="h-screen bg-slate-950" />;
+
   return (
     <div className="h-screen flex bg-slate-950 text-white">
       {/* LEFT: form */}
@@ -137,7 +143,28 @@ export default function BuilderPage() {
           {exporting ? "Generating..." : "⬇ Generate Project (ZIP)"}
         </button>
         {exportError && <p className="text-xs text-red-400 mb-2">{exportError}</p>}
-                <GitHubPush templateId={current.id} data={data} />
+
+        <div className="mb-3 rounded-lg border border-amber-500/40 bg-amber-500/10 p-3 text-xs text-amber-100">
+          <p className="font-semibold mb-1">Before you run the downloaded project</p>
+          <ol className="list-decimal pl-4 space-y-1 text-amber-100/90">
+            <li>
+              Unzip the file and open the folder that contains{" "}
+              <code className="bg-slate-900 px-1 rounded">package.json</code> in VS Code.
+            </li>
+            <li>
+              Install the packages first: <code className="bg-slate-900 px-1 rounded">npm install</code>
+            </li>
+            <li>
+              Then start the site: <code className="bg-slate-900 px-1 rounded">npm run dev</code>
+            </li>
+          </ol>
+          <p className="mt-2 text-amber-100/70">
+            Node.js must be installed. If you skip step 2 you will see the error &quot;&apos;next&apos; is not
+            recognized&quot;.
+          </p>
+        </div>
+
+        <GitHubPush templateId={current.id} data={data} />
 
         <h2 className="text-sm font-semibold mt-6 mb-3">About you</h2>
         <Field label="Full name">
@@ -171,11 +198,15 @@ export default function BuilderPage() {
           onAccept={(t) => updateField("bio", t)}
         />
         <Field label="Skills (comma separated)">
-          <ListInput value={data.skills} onChange={(v) => updateField("skills", v)} placeholder="React, Next.js, TypeScript" />
+          <ListInput
+            value={data.skills}
+            onChange={(v) => updateField("skills", v)}
+            placeholder="React, Next.js, TypeScript"
+          />
         </Field>
 
         <h2 className="text-sm font-semibold mt-6 mb-3">Links</h2>
-        {(["github", "linkedin", "twitter"] as const).map((key) => (
+        {(["github", "linkedin", "instagram"] as const).map((key) => (
           <Field key={key} label={key[0].toUpperCase() + key.slice(1) + " URL"}>
             <input
               className={inputClass}
@@ -202,7 +233,11 @@ export default function BuilderPage() {
               </button>
             </div>
             <Field label="Title">
-              <input className={inputClass} value={p.title} onChange={(e) => updateProject(p.id, { title: e.target.value })} />
+              <input
+                className={inputClass}
+                value={p.title}
+                onChange={(e) => updateProject(p.id, { title: e.target.value })}
+              />
             </Field>
             <Field label="Description">
               <textarea
@@ -241,7 +276,7 @@ export default function BuilderPage() {
 
       {/* RIGHT: live preview */}
       <main className="flex-1 overflow-auto">
-                <SitePreview data={data} theme={theme} />
+        <SitePreview data={data} theme={theme} />
       </main>
     </div>
   );
