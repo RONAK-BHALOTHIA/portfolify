@@ -18,7 +18,9 @@ export type PortfolioData = {
   socials: {
     github?: string;
     linkedin?: string;
+    instagram?: string;
     twitter?: string;
+
   };
 };
 
