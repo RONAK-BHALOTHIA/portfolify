@@ -7,7 +7,7 @@ import { themes } from "@/lib/themes";
 export const runtime = "nodejs";
 
 const root = process.cwd();
-const read = (rel: string) => fs.readFile(path.join(root, rel), "utf8");
+const read = (rel: string) => fs.readFile(path.join(/*turbopackIgnore: true*/ root, rel), "utf8");
 
 const slugify = (s: string) =>
   s.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "") || "portfolio";
@@ -24,6 +24,7 @@ export async function POST(req: Request) {
     if (!data || typeof data !== "object" || typeof data.name !== "string") {
       return NextResponse.json({ error: "Invalid portfolio data." }, { status: 400 });
     }
+      
     const dataJson = JSON.stringify(data, null, 2);
     if (dataJson.length > 100_000) {
       return NextResponse.json({ error: "Portfolio data is too large." }, { status: 413 });
